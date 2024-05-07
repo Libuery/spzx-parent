@@ -1,5 +1,6 @@
 package com.buyi.spzx.manager.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.buyi.spzx.common.exception.MyException;
 import com.buyi.spzx.manager.mapper.SysUserMapper;
@@ -16,18 +17,42 @@ import org.springframework.util.DigestUtils;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static com.buyi.spzx.common.constant.RedisKey.LOGIN_KEY;
+import static com.buyi.spzx.common.constant.RedisKey.VALIDATECODE_KEY;
+
 @Service
 public class SysUserServiceImpl implements SysUserService {
-
-    private static final String LOGIN_KEY = "user:login:";
 
     @Resource
     private SysUserMapper sysUserMapper;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
+    /**
+     * 登录方法
+     *
+     * @param loginDto
+     * @return
+     */
     @Override
     public LoginVo login(LoginDto loginDto) {
+        // 校验验证码
+        String input_captcha = loginDto.getCaptcha();
+        String codeKey = loginDto.getCodeKey();
+
+        // 根据前端传来的key查询redis找验证码
+        String key = VALIDATECODE_KEY + codeKey;
+        String redis_captcha = redisTemplate.opsForValue().get(key);
+
+        // 校验验证码是否过期
+        if (StrUtil.isEmpty(redis_captcha)) {
+            throw new MyException(ResultCodeEnum.VALIDATECODE_EXPIRED);
+        }
+        // 比对验证码 忽略大小写
+        if (!StrUtil.equalsIgnoreCase(redis_captcha, input_captcha)) {
+            throw new MyException(ResultCodeEnum.VALIDATECODE_ERROR);
+        }
+
         // 根据用户名查询用户
         SysUser sysUser = sysUserMapper.getByUsername(loginDto.getUserName());
         if (sysUser == null) {
@@ -43,15 +68,19 @@ public class SysUserServiceImpl implements SysUserService {
             throw new MyException(ResultCodeEnum.LOGIN_ERROR);
         }
 
+
         // 生成令牌，保存数据到Redis中
         String token = UUID.randomUUID().toString().replace("-", "");
         redisTemplate.opsForValue()
-                .set(LOGIN_KEY + token, JSON.toJSONString(sysUser), 1, TimeUnit.DAYS);
+                .set(LOGIN_KEY + token, JSON.toJSONString(sysUser), 3, TimeUnit.DAYS);
 
         // 生成返回对象
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
         loginVo.setRefresh_token("");
+
+        //登录成功，删除redis中存储的验证码
+        redisTemplate.delete(key);
 
         return loginVo;
     }
