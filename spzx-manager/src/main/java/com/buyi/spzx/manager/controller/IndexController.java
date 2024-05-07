@@ -3,6 +3,7 @@ package com.buyi.spzx.manager.controller;
 import com.buyi.spzx.manager.service.SysUserService;
 import com.buyi.spzx.manager.service.ValidateCodeService;
 import com.buyi.spzx.model.dto.system.LoginDto;
+import com.buyi.spzx.model.entity.system.SysUser;
 import com.buyi.spzx.model.vo.common.Result;
 import com.buyi.spzx.model.vo.system.LoginVo;
 import com.buyi.spzx.model.vo.system.ValidateCodeVo;
@@ -35,5 +36,13 @@ public class IndexController {
         ValidateCodeVo validateCodeVo = validateCodeService.generateValidateCode();
         return Result.success(validateCodeVo) ;
     }
+
+    @Operation(summary = "获取用户信息")
+    @GetMapping("/getUserInfo")
+    public Result<SysUser> getUserInfo(@RequestHeader(name = "token") String token) {
+        SysUser sysUser = sysUserService.getUserInfo(token);
+        return Result.success(sysUser);
+    }
+
 
 }

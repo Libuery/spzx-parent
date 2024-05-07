@@ -31,8 +31,8 @@ public class SysUserServiceImpl implements SysUserService {
     /**
      * 登录方法
      *
-     * @param loginDto
-     * @return
+     * @param loginDto 请求参数
+     * @return 返回对象
      */
     @Override
     public LoginVo login(LoginDto loginDto) {
@@ -83,5 +83,18 @@ public class SysUserServiceImpl implements SysUserService {
         redisTemplate.delete(key);
 
         return loginVo;
+    }
+
+    /**
+     * 根据token获取当期登录用户的信息
+     *
+     * @param token token
+     * @return 用户对象
+     */
+    @Override
+    public SysUser getUserInfo(String token) {
+        // 从redis中获取用户信息
+        String userJSON = redisTemplate.opsForValue().get(LOGIN_KEY + token);
+        return JSON.parseObject(userJSON, SysUser.class);
     }
 }
