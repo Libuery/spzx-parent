@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.buyi.spzx.manager.mapper.SysUserMapper">
+
+    <!--用于查询公共抽取的列-->
+    <sql id="columns">
+        id,username as userName,password,name,phone,avatar,description,status,create_time,update_time,is_deleted
+    </sql>
+
+    <select id="getByUsername" resultType="com.buyi.spzx.model.entity.system.SysUser">
+        select <include refid="columns"/> from sys_user where username = #{userName}
+    </select>
+</mapper>

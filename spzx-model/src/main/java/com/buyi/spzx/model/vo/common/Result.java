@@ -20,7 +20,8 @@ public class Result<T> {
     private T data;
 
     // 私有化构造
-    private Result() {}
+    private Result() {
+    }
 
     // 返回数据
     public static <T> Result<T> build(T body, Integer code, String message) {
@@ -32,8 +33,28 @@ public class Result<T> {
     }
 
     // 通过枚举构造Result对象
-    public static <T> Result build(T body , ResultCodeEnum resultCodeEnum) {
-        return build(body , resultCodeEnum.getCode() , resultCodeEnum.getMessage()) ;
+    public static <T> Result<T> build(T body, ResultCodeEnum resultCodeEnum) {
+        return build(body, resultCodeEnum.getCode(), resultCodeEnum.getMessage());
     }
 
+    /**
+     * 成功调用时构造返回对象
+     *
+     * @param body 返回信息
+     * @param <T>  泛型
+     * @return 返回信息
+     */
+    public static <T> Result<T> success(T body) {
+        return build(body, ResultCodeEnum.SUCCESS);
+    }
+
+    /**
+     * 失败调用时构造返回对象
+     *
+     * @param resultCodeEnum 响应信息
+     * @return 返回信息
+     */
+    public static <T> Result<T> error(ResultCodeEnum resultCodeEnum) {
+        return build(null, resultCodeEnum);
+    }
 }
