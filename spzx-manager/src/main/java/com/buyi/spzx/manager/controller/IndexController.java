@@ -42,6 +42,8 @@ public class IndexController {
     public Result<SysUser> getUserInfo(@RequestHeader(name = "token") String token) {
         SysUser sysUser = sysUserService.getUserInfo(token);
         return Result.success(sysUser);
+        // 有了登录拦截器后，可以优化为
+//        return Result.success(AuthContextUtil.get());
     }
 
     @Operation(summary = "退出登录")
