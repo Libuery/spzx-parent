@@ -37,4 +37,9 @@ public class SysRoleServiceImpl implements SysRoleService {
     public void saveSysRole(SysRole sysRole) {
         sysRoleMapper.saveSysRole(sysRole);
     }
+
+    @Override
+    public void updateSysRole(SysRole sysRole) {
+        sysRoleMapper.updateSysRole(sysRole);
+    }
 }

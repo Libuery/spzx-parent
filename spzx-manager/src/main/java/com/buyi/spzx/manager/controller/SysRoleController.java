@@ -34,4 +34,11 @@ public class SysRoleController {
         return Result.success(null);
     }
 
+    @Operation(summary = "修改角色")
+    @PutMapping("/updateSysRole")
+    public Result<String> updateSysRole(@RequestBody SysRole sysRole) {
+        sysRoleService.updateSysRole(sysRole);
+        return Result.success(null);
+    }
+
 }
