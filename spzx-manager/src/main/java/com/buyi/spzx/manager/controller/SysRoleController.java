@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Tag(name = "角色管理接口")
 @RestController
 @RequestMapping("/admin/system/sysRole")
@@ -27,6 +25,13 @@ public class SysRoleController {
                                                 @PathVariable("pageSize") Integer pageSize) {
         PageInfo<SysRole> pageInfo = sysRoleService.findByPage(sysRoleDto, pageNum, pageSize);
         return Result.success(pageInfo);
+    }
+
+    @Operation(summary = "添加角色")
+    @PostMapping("/saveSysRole")
+    public Result<String> saveSysRole(@RequestBody SysRole sysRole) {
+        sysRoleService.saveSysRole(sysRole);
+        return Result.success(null);
     }
 
 }

@@ -32,4 +32,9 @@ public class SysRoleServiceImpl implements SysRoleService {
         List<SysRole> sysRoleList = sysRoleMapper.findByPage(sysRoleDto);
         return new PageInfo<>(sysRoleList);
     }
+
+    @Override
+    public void saveSysRole(SysRole sysRole) {
+        sysRoleMapper.saveSysRole(sysRole);
+    }
 }
