@@ -13,4 +13,6 @@ public interface SysRoleMapper {
     void saveSysRole(SysRole sysRole);
 
     void updateSysRole(SysRole sysRole);
+
+    void deleteSysRole(Integer id);
 }

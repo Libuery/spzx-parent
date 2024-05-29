@@ -41,4 +41,10 @@ public class SysRoleController {
         return Result.success(null);
     }
 
+    @Operation(summary = "删除角色")
+    @DeleteMapping("/deleteSysRole/{id}")
+    public Result<String> deleteSysRole(@PathVariable Integer id) {
+        sysRoleService.deleteSysRole(id);
+        return Result.success(null);
+    }
 }
